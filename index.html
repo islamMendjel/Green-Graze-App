@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Green Graze - Calculateur de Ration</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Splash Screen -->
+    <div id="splash" class="screen active">
+        <div class="logo">Green Graze</div>
+    </div>
+    
+    <!-- Opening Screen -->
+    <div id="opening" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1 class="title">Green Graze</h1>
+                <p class="subtitle">Calculateur de ration pour bovins avec stades physiologiques</p>
+            </div>
+            <div class="glass-card" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #cbd5e1;">
+                    Optimisez l'alimentation de vos bovins avec notre calculateur intelligent adapté aux différents stades physiologiques.
+                </p>
+                <button class="btn" onclick="showScreen('version')">Démarrer l'analyse</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Version Selection -->
+    <div id="version" class="screen">
+        <div class="container">
+            <div class="header">
+                <h2 class="title">Sélectionnez la version</h2>
+                <p class="subtitle">Choisissez l'unité de mesure préférée</p>
+            </div>
+            <div class="grid grid-2">
+                <div class="glass-card category-card" onclick="setVersion('Official')">
+                    <div class="category-icon">⚖️</div>
+                    <h3 class="category-title">Official (kg)</h3>
+                    <p class="category-desc">Version standard avec unités en kilogrammes</p>
+                </div>
+                <div class="glass-card category-card" onclick="setVersion('Prototype')">
+                    <div class="category-icon">🔬</div>
+                    <h3 class="category-title">Prototype (g)</h3>
+                    <p class="category-desc">Version précise avec unités en grammes</p>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="btn btn-secondary" onclick="showScreen('opening')">Retour</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Category Selection -->
+    <div id="category" class="screen">
+        <div class="container">
+            <div class="header">
+                <h2 class="title">Catégories de bovins</h2>
+                <p class="subtitle">Sélectionnez le type d'élevage</p>
+            </div>
+            <div class="grid grid-3">
+                <div class="glass-card category-card" onclick="selectCategory('Laitières')">
+                    <div class="category-icon">🥛</div>
+                    <h3 class="category-title">Laitières</h3>
+                    <p class="category-desc">Holstein, Montbéliarde, Normande, Jersey</p>
+                </div>
+                <div class="glass-card category-card" onclick="selectCategory('À viande')">
+                    <div class="category-icon">🥩</div>
+                    <h3 class="category-title">À viande</h3>
+                    <p class="category-desc">Charolaise, Limousine, Aubrac, Brune de l'Atlas</p>
+                </div>
+                <div class="glass-card category-card" onclick="selectCategory('Mixtes (lait & viande)')">
+                    <div class="category-icon">🔄</div>
+                    <h3 class="category-title">Mixtes</h3>
+                    <p class="category-desc">Salers, Simmental, Tarentaise</p>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <button class="btn btn-secondary" onclick="showScreen('version')">Versions</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Breed Selection -->
+    <div id="breed" class="screen">
+        <div class="container">
+            <div class="header">
+                <h2 class="title" id="breedTitle">Sélectionnez une race</h2>
+            </div>
+            <div id="breedList" class="grid"></div>
+            <div class="nav-bar">
+                <button class="btn btn-secondary" onclick="showScreen('category')">Catégories</button>
+                <button class="btn btn-secondary" onclick="showScreen('version')">Versions</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stage Selection -->
+    <div id="stage" class="screen">
+        <div class="container">
+            <div class="header">
+                <h2 class="title" id="stageTitle">Stade physiologique</h2>
+            </div>
+            <div id="stageList" class="grid"></div>
+            <div class="nav-bar">
+                <button class="btn btn-secondary" onclick="showScreen('breed')">Retour</button>
+                <button class="btn btn-secondary" onclick="showScreen('category')">Catégories</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Nutrition Results -->
+    <div id="nutrition" class="screen">
+        <div class="container">
+            <div class="header">
+                <h2 class="title">Résultats nutritionnels</h2>
+            </div>
+            <div id="nutritionResults"></div>
+            <div class="nav-bar">
+                <button class="btn" onclick="showScreen('stage')">Autre stade</button>
+                <button class="btn btn-accent" onclick="showScreen('breed')">Autre race</button>
+                <button class="btn btn-secondary" onclick="showScreen('category')">Catégories</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Weight Input Modal -->
+    <div id="weightModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem;">Entrer le poids</h3>
+            <div class="input-group">
+                <label class="input-label" id="weightLabel">Poids en kg</label>
+                <input type="number" class="input-field" id="weightInput" placeholder="Ex: 450" />
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn" onclick="submitWeight()">Valider</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <h3 id="detailTitle" style="margin-bottom: 1rem;"></h3>
+            <div id="detailContent" style="margin-bottom: 2rem; line-height: 1.6;"></div>
+            <button class="btn" onclick="closeDetailModal()">Fermer</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
